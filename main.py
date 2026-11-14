@@ -27,6 +27,7 @@ class Quiz:
 # 설정 및 기본 데이터
 QUIZ_FILE = "quiz_data.json"
 SAVE_FILE = "save_data.json"
+SCORE_FILE = "high_score.txt"
 
 DEFAULT_QUIZ_DATA = [
     {
@@ -172,6 +173,20 @@ def load_progress():
 
     return None
 
+# 최고 점수 저장 및 불러오기
+def load_high_score():
+    if not os.path.exists(SCORE_FILE):
+        return 0
+    try:
+        with open(SCORE_FILE, 'r', encoding='utf-8') as f:
+            return int(f.read().strip())
+    except (ValueError, FileNotFoundError):
+        return 0
+
+def save_high_score(score):
+    with open(SCORE_FILE, 'w', encoding='utf-8') as f:
+        f.write(str(score))
+
 
 # 메인 게임 로직
 def start_quiz(quiz_list):
@@ -259,6 +274,14 @@ def start_quiz(quiz_list):
         )
         print("=" * 30)
 
+        # 최고 점수 로직
+        high_score = load_high_score()
+        if score > high_score:
+            print(f"🎊 축하합니다! 최고 기록을 경신했습니다! ({high_score} -> {score})")
+            save_high_score(score)
+        else:
+            print(f"현재 최고 기록은 {high_score}점입니다.")
+        
         # 퀴즈 완료 시 세이브 파일 삭제
         if os.path.exists(SAVE_FILE):
             os.remove(SAVE_FILE)
@@ -282,29 +305,29 @@ def main():
         print("=" * 30)
         print("1. 퀴즈 시작")
         print("2. 새로운 퀴즈 추가")
-        print("3. 퀴즈 목록 보기")  # 추가
-        print("4. 종료")           # 번호 변경
+        print("3. 퀴즈 목록 보기")
+        print("4. 최고 점수 확인") 
+        print("5. 종료")           
         print("=" * 30)
 
         try:
-            # 범위를 1-4로 변경
-            menu = get_valid_input(
-                "메뉴를 선택하세요 (1-4): ", 1, 4
-            )
+            menu = get_valid_input("메뉴를 선택하세요 (1-5): ", 1, 5)
 
             if menu == 1:
                 start_quiz(quiz_list)
-
             elif menu == 2:
                 add_quiz(quiz_list)
-
             elif menu == 3:
-                view_quiz_list(quiz_list) # 목록 보기 기능 호출
-
+                view_quiz_list(quiz_list)
             elif menu == 4:
+                hs = load_high_score()
+                if hs == 0:
+                    print("\n[알림] 아직 기록된 최고 점수가 없습니다. 먼저 퀴즈를 풀어보세요!")
+                else:
+                    print(f"\n🏆 현재 최고 점수: {hs}점")
+            elif menu == 5:
                 print("\n게임을 종료합니다.")
                 break
-
         except (KeyboardInterrupt, EOFError):
             print("\n게임을 종료합니다.")
             break
