@@ -117,6 +117,21 @@ def add_quiz(quiz_list):
 
     print("새로운 퀴즈가 추가되었습니다!")
 
+# 퀴즈 목록 보기
+def view_quiz_list(quiz_list):
+    print("\n" + "="*30)
+    print("      📚 등록된 퀴즈 목록      ")
+    print("="*30)
+
+    if not quiz_list:
+        print("등록된 퀴즈가 없습니다. 문제를 먼저 추가해 주세요!")
+    else:
+        for i, quiz in enumerate(quiz_list, 1):
+            print(f"{i}. {quiz.question}")
+            print(f"   (정답: {quiz.answer}번)")
+    
+    print("="*30)
+    input("\n엔터를 누르면 메뉴로 돌아갑니다...")
 
 # 진행 상황 저장
 def save_progress(index, score):
@@ -267,12 +282,14 @@ def main():
         print("=" * 30)
         print("1. 퀴즈 시작")
         print("2. 새로운 퀴즈 추가")
-        print("3. 종료")
+        print("3. 퀴즈 목록 보기")  # 추가
+        print("4. 종료")           # 번호 변경
         print("=" * 30)
 
         try:
+            # 범위를 1-4로 변경
             menu = get_valid_input(
-                "메뉴를 선택하세요 (1-3): ", 1, 3
+                "메뉴를 선택하세요 (1-4): ", 1, 4
             )
 
             if menu == 1:
@@ -282,13 +299,15 @@ def main():
                 add_quiz(quiz_list)
 
             elif menu == 3:
+                view_quiz_list(quiz_list) # 목록 보기 기능 호출
+
+            elif menu == 4:
                 print("\n게임을 종료합니다.")
                 break
 
         except (KeyboardInterrupt, EOFError):
             print("\n게임을 종료합니다.")
             break
-
 
 # 프로그램 실행
 if __name__ == "__main__":
