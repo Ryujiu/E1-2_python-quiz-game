@@ -34,7 +34,7 @@ class QuizGame:
         # 기본 퀴즈 데이터 (파일이 없을 때 사용)
         self.DEFAULT_QUIZ_DATA = [
             {"question": f"기본 문제 {i}", "choices": ["선택1", "선택2", "선택3", "선택4"], "answer": 1}
-            for i in range(1, 6)
+            for i in range(1, 6)1
         ]
         
         # 데이터 로드 (퀴즈 목록과 최고 점수를 한 번에 가져옴)
