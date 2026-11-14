@@ -64,6 +64,29 @@ def load_quiz_data():
             json.dump(DEFAULT_QUIZ_DATA, f, ensure_ascii=False, indent=4)
         return [Quiz(**d) for d in DEFAULT_QUIZ_DATA]
 
+# 퀴즈 저장하기_현재 퀴즈리스트를 quiz-data.json에 저장
+def save_quiz_data(quiz_list):
+    with open(QUIZ_FILE, "w", encoding="utf-8") as f:
+        data = [quiz.to_dict() for quiz in quiz_list]
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+# 새로운 퀴즈 추가하기
+def add_quiz(quiz_list):
+    print("\n ------ 새로운 퀴즈 추가 ------")
+    question = input("문제를 입력하세요: ").strip()
+
+    choices = []
+    for i in range (1, 5):
+        choice = input(f"선택지 {i}를 입력하세요: ").strip()
+        choices.append(choice)
+    
+    answer = get_valid_input("정답 번호를 입력하세요 (1-4): ", 1, 4)
+    new_quiz = Quiz(question, choices, answer)
+    quiz_list.append(new_quiz)
+
+    save_quiz_data(quiz_list)
+    print("새로운 퀴즈가 추가되었습니다!")
+
 # 저장 및 불러오기 기능
 def save_progress(index, score):
     data = {"last index": index, "score": score}
@@ -96,8 +119,8 @@ def get_valid_input(prompt, min_val, max_val):
         except ValueError:
             print("잘못된 입력입니다. 숫자를 입력해주세요.")
 
-# 메인 게임 로직
 
+# 메인 게임 로직
 def start_quiz(quiz_list):
     progress = load_progress()
     start_index = 0
@@ -143,22 +166,25 @@ def main():
 
     try:
         while True:
+            print("\n========================================")
+            print("               퀴즈 프로그램               ")
             print("========================================")
-            print("               퀴즈 맞추기               ")
-            print("========================================")
-            print("1. 시작하기")
-            print("2. 종료하기")
+            print("1. 퀴즈 시작하기")
+            print("2. 문제 추가하기")  
+            print("3. 종료하기")
             print("========================================")
 
-            choice = get_valid_input("메뉴 번호를 입력하세요: ", 1, 2)
+            choice = get_valid_input("메뉴 번호를 입력하세요: ", 1, 3) 
 
             if choice == 1: 
                 start_quiz(quiz_list)
             elif choice == 2:
-                print ("\n 퀴즈를 종료합니다!")
+                add_quiz(quiz_list) # 추가됨
+            elif choice == 3:
+                print("\n 프로그램을 종료합니다. 즐거운 하루 되세요!")
                 break
     except (KeyboardInterrupt, EOFError):
-        print("\n 강제 종료 신호를 감지했습니다. 안전하게 종료합니다")
+        print("\n 강제 종료 신호를 감지했습니다. 안전하게 종료합니다.")
 
 if __name__ == "__main__":
     main()
