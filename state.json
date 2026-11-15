@@ -101,5 +101,9 @@
             "answer": 1
         }
     ],
-    "best_score": 6
+    "best_score": 7,
+    "in_progress": {
+        "current_index": 0,
+        "current_score": 0
+    }
 }

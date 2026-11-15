@@ -23,30 +23,43 @@ class QuizGame:
         self.STATE_FILE = "state.json"
         self.quiz_list = []
         self.best_score = 0
+        self.current_index = 0
+        self.current_score = 0
         self.load_state()
 
     def load_state(self):
+        import os
         if not os.path.exists(self.STATE_FILE):
-            print("ℹ️ 저장된 데이터가 없어 기본 문제를 로드합니다.")
-            self.quiz_list = [Quiz(f"기본 문제 {i}", ["1", "2", "3", "4"], 1) for i in range(1, 4)]
             return
 
         try:
             with open(self.STATE_FILE, "r", encoding="utf-8") as f:
                 data = json.load(f)
-                self.quiz_list = [Quiz(**q) for q in data.get("quizzes", [])]
+                
+                quiz_data = data.get("quizzes", [])
+                self.quiz_list = [Quiz(q['question'], q['choices'], q['answer']) for q in quiz_data]
+
                 self.best_score = data.get("best_score", 0)
-        except json.JSONDecodeError:
-            print("❌ 데이터 파일이 손상되었습니다. 기본 설정으로 시작합니다.")
-            self.quiz_list = [Quiz("기본 문제", ["1", "2", "3", "4"], 1)]
+                
+                progress = data.get("in_progress", {})
+                self.current_index = progress.get("current_index", 0)
+                self.current_score = progress.get("current_score", 0)
+                
+                print(f"✅ 데이터를 성공적으로 불러왔습니다. (퀴즈: {len(self.quiz_list)}개)")
+
         except Exception as e:
-            print(f"❌ 알 수 없는 오류 발생: {e}")
+            print(f"⚠️ 데이터를 불러오는 중 오류 발생: {e}")
+            self.quiz_list = [] 
 
     def save_state(self):
         try:
             state_data = {
                 "quizzes": [q.to_dict() for q in self.quiz_list],
-                "best_score": self.best_score
+                "best_score": self.best_score,
+                "in_progress": {
+                "current_index": self.current_index,
+                "current_score": self.current_score
+                }
             }
             with open(self.STATE_FILE, "w", encoding="utf-8") as f:
                 json.dump(state_data, f, ensure_ascii=False, indent=4)
@@ -62,30 +75,72 @@ class QuizGame:
                 print(f"⚠️ 경고: {min_val}에서 {max_val} 사이의 숫자를 입력해주세요.")
             except ValueError:
                 print("⚠️ 에러: 문자가 아닌 '숫자'를 입력해야 합니다.")
-
-    def start_quiz(self):
-        if not self.quiz_list:
-            print("\n❌ 등록된 문제가 없습니다. 2번 메뉴에서 문제를 먼저 추가해주세요!")
-            return
-
-        print(f"\n🚀 퀴즈를 시작합니다! (총 {len(self.quiz_list)}문제)")
-        score = 0
-        for i, quiz in enumerate(self.quiz_list, 1):
-            print(f"\n[{i}/{len(self.quiz_list)}번 문제]")
-            quiz.display()
-            user_ans = self.get_valid_input("정답 입력: ", 1, 4)
-            
-            if quiz.is_correct(user_ans):
-                print("✅ 정답입니다!")
-                score += 1
-            else:
-                print(f"❌ 틀렸습니다. 정답은 {quiz.answer}번입니다.")
-        
-        print(f"\n🏁 퀴즈 종료! 내 점수: {score}/{len(self.quiz_list)}")
+    
+    def update_best_score(self, score):
         if score > self.best_score:
             print(f"🎊 축하합니다! 최고 기록을 경신했습니다! ({self.best_score} -> {score})")
             self.best_score = score
-            self.save_state()
+        else:
+            print(f"현재 최고 기록: {self.best_score}")
+
+    def start_quiz(self):
+        if not self.quiz_list:
+            print("\n❌ 등록된 퀴즈가 없습니다. 퀴즈를 먼저 추가해주세요!")
+            return
+
+        if self.current_index > 0:
+            print(f"\n📝 이전에 {self.current_index}번 문제까지 풀었습니다.")
+            choice = input("▶️ 이어서 푸시겠습니까? (y/n): ").strip().lower()
+            
+            if choice != 'y':
+                print("♻️ 처음부터 다시 시작합니다.")
+                self.current_index = 0
+                self.current_score = 0
+            else:
+                print(f"🚀 {self.current_index + 1}번 문제부터 재개합니다!")
+
+        total_quizzes = len(self.quiz_list)
+        
+        for i in range(self.current_index, total_quizzes):
+            quiz = self.quiz_list[i]
+            
+            print(f"\n[문제 {i + 1} / {total_quizzes}]")
+            print(f"질문: {quiz.question}")
+            
+            for idx, choice in enumerate(quiz.choices, 1):
+                print(f"{idx}. {choice}")
+            
+            user_answer = input("답변 입력 (그만두기: q) > ").strip()
+            
+            if user_answer.lower() == 'q':
+                print("\n💾 진행 상황을 저장하고 메뉴로 나갑니다.")
+                return
+
+            try:
+                if int(user_answer) == quiz.answer:
+                    print("✅ 정답입니다!")
+                    self.current_score += 1
+                else:
+                    print(f"❌ 틀렸습니다. 정답은 [{quiz.answer}] 입니다.")
+            except ValueError:
+                print("⚠️ 숫자 번호를 입력해주세요. 이번 문제는 틀린 것으로 처리됩니다.")
+
+            self.current_index = i + 1
+
+        print("\n" + "=" * 30)
+        print(f"🎊 모든 문제를 다 풀었습니다!")
+        print(f"📊 이번 회차 점수: {self.current_score} / {total_quizzes}")
+        print("=" * 30)
+
+        # 최고 점수 갱신 (메서드 호출)
+        self.update_best_score(self.current_score)
+        
+        # 중요: 다음 게임을 위해 진행 상황 초기화
+        self.current_index = 0
+        self.current_score = 0
+        
+        # 변경된 최고 점수와 초기화된 진행 상황을 파일에 저장
+        self.save_state()
 
     def delete_quiz(self):
         if not self.quiz_list:
