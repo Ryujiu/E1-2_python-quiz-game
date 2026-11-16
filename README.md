@@ -167,19 +167,19 @@
 # Git 실습완료 26.11.15 16:20
 # Git 실습완료 26.11.16 16:13 실습 증거자료 제출을 위한 재실습
 # 제출물 스크린샷
-Git Clone&Pull
-<img src="screenshot/gitclone.PNG" width="400">
-<img src="(screenshot/gitpush.PNG" width="400">
-<img src="screenshot/gitpull.PNG" width="400">
+Git Clone&Pull  
+<img src="screenshot/gitclone.PNG" width="400">  
+<img src="(screenshot/gitpush.PNG" width="400">  
+<img src="screenshot/gitpull.PNG" width="400">  
 
-Git log --oneline --graph
-<img src="screenshot/git log --oneline --graph.PNG" width="400">
+Git log --oneline --graph  
+<img src="screenshot/git log --oneline --graph.PNG" width="400">  
 
-프로그램 실행 관련 스크린샷
-<img src="screenshot/mainmenu.PNG" width="400">
-<img src="screenshot/playquiz.PNG" width="400">
-<img src="screenshot/finishquiz.PNG" width="400">
-<img src="screenshot/addquiz.PNG" width="400">
-<img src="screenshot/quizlist.PNG" width="400">
-<img src="screenshot/deletequiz.PNG" width="400">
-<img src="screenshot/highscore.PNG" width="400">
+프로그램 실행 관련 스크린샷  
+<img src="screenshot/mainmenu.PNG" width="400">  
+<img src="screenshot/playquiz.PNG" width="400">  
+<img src="screenshot/finishquiz.PNG" width="400">  
+<img src="screenshot/addquiz.PNG" width="400">  
+<img src="screenshot/quizlist.PNG" width="400">  
+<img src="screenshot/deletequiz.PNG" width="400">  
+<img src="screenshot/highscore.PNG" width="400">  
