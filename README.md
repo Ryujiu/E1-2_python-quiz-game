@@ -169,7 +169,7 @@
 # 제출물 스크린샷
 Git Clone&Pull  
 <img src="screenshot/gitclone.PNG" width="400">  
-<img src="(screenshot/gitpush.PNG" width="400">  
+<img src="screenshot/gitpush.PNG" width="400">  
 <img src="screenshot/gitpull.PNG" width="400">  
 
 Git log --oneline --graph  
