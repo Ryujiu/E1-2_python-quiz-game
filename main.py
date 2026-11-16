@@ -28,7 +28,6 @@ class QuizGame:
         self.load_state()
 
     def load_state(self):
-        import os
         if not os.path.exists(self.STATE_FILE):
             return
 
@@ -47,9 +46,12 @@ class QuizGame:
                 
                 print(f"✅ 데이터를 성공적으로 불러왔습니다. (퀴즈: {len(self.quiz_list)}개)")
 
+        except PermissionError:
+            print(f"⚠️ 권한 에러: '{self.STATE_FILE}' 파일을 읽을 권한이 없습니다. 파일 속성에서 읽기 권한을 확인해주세요.")
+        except json.JSONDecodeError:
+            print(f"⚠️ 데이터 파싱 에러: '{self.STATE_FILE}' 형식이 올바르지 않습니다.")
         except Exception as e:
-            print(f"⚠️ 데이터를 불러오는 중 오류 발생: {e}")
-            self.quiz_list = [] 
+            print(f"⚠️ 데이터를 불러오는 중 예기치 못한 오류 발생: {e}")
 
     def save_state(self):
         try:
@@ -57,12 +59,14 @@ class QuizGame:
                 "quizzes": [q.to_dict() for q in self.quiz_list],
                 "best_score": self.best_score,
                 "in_progress": {
-                "current_index": self.current_index,
-                "current_score": self.current_score
+                    "current_index": self.current_index,
+                    "current_score": self.current_score
                 }
             }
             with open(self.STATE_FILE, "w", encoding="utf-8") as f:
                 json.dump(state_data, f, ensure_ascii=False, indent=4)
+        except PermissionError:
+            print(f"❌ 권한 에러: '{self.STATE_FILE}'에 저장할 권한이 없습니다. 다른 프로그램에서 파일을 사용 중인지 확인하세요.")
         except Exception as e:
             print(f"❌ 저장 중 오류가 발생했습니다: {e}")
 
