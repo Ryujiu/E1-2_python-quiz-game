@@ -167,3 +167,19 @@
 # Git 실습완료 26.11.15 16:20
 # Git 실습완료 26.11.16 16:13 실습 증거자료 제출을 위한 재실습
 # 제출물 스크린샷
+Git Clone&Pull
+![Git Clone 실습](screenshot/gitclone.png)
+![Git Push 실습](screenshot/gitpush.png)
+![Git Pull 실습](screenshot/gitpull.png)
+
+Git log --oneline --graph
+![Git log --oneline --graph](screenshot/git log --oneline --graph)
+
+프로그램 실행 관련 스크린샷
+![메인메뉴](screenshot/mainmenu.png)
+![퀴즈실행](screenshot/playquiz.png)
+![퀴즈종료](screenshot/finishquiz.png)
+![퀴즈추가](screenshot/addquiz.png)
+![퀴즈리스트](screenshot/quizlist.png)
+![퀴즈삭제](screenshot/deletequiz.png)
+![최고점수](screenshot/highscore.png)
